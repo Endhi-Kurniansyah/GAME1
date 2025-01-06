@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stage 1</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #6f2dbd;
+      background-image: linear-gradient(to bottom, #6f2dbd, #b185db);
+      color: #fff;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      position: absolute;
+      top: 10px;
+      padding: 0 20px;
+      box-sizing: border-box;
+    }
+
+    .header button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    .stage-info {
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+
+    .game-container {
+      background-color: white;
+      color: black;
+      border-radius: 15px;
+      max-width: 400px;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .life-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .life-circle {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      font-weight: bold;
+      color: white;
+    }
+
+    .timer {
+      font-size: 1rem;
+      color: black;
+      margin: 10px 0;
+      height: 1.5em;
+      visibility: hidden;
+    }
+
+    .output {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      margin-top: 20px;
+    }
+
+    .answer-letter {
+      width: 50px;
+      height: 50px;
+      border: 2px solid #ddd;
+      border-radius: 5px;
+      text-align: center;
+      line-height: 50px;
+      font-size: 1.5rem;
+      background-color: white;
+    }
+
+    .letters {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .letter {
+      background-color: #e0e0e0;
+      border-radius: 10px;
+      padding: 15px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .letter.disabled {
+      background-color: #bbb;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    .footer {
+      position: absolute;
+      bottom: 10px;
+      text-align: center;
+      width: 100%;
+      font-size: 0.9rem;
+      color: #ddd;
+    }
+  </style>
+  <script>
+    let lives = 3;
+    const maxLives = 3;
+    const baseTime = 60000;
+    let mistakeTimes = [baseTime, 2 * baseTime, 3 * baseTime];
+    let currentTimers = [];
+    const correctAnswer = "LARIS";
+
+    function selectLetter(letter, element) {
+      if (lives === 0) return;
+
+      const outputBoxes = document.querySelectorAll('.answer-letter');
+      for (let box of outputBoxes) {
+        if (box.textContent === '') {
+          box.textContent = letter;
+          break;
+        }
+      }
+
+      element.classList.add('disabled');
+      checkAnswer();
+    }
+
+    function checkAnswer() {
+      const outputBoxes = document.querySelectorAll('.answer-letter');
+      const userAnswer = Array.from(outputBoxes).map(box => box.textContent).join('');
+
+      if (userAnswer.length === correctAnswer.length) {
+        if (userAnswer === correctAnswer) {
+          window.location.href = 'selamat4.html';
+        } else {
+          handleWrongAnswer();
+        }
+      }
+    }
+
+    function handleWrongAnswer() {
+      if (lives > 0) {
+        lives--;
+        const regenerationTime = mistakeTimes[maxLives - lives - 1];
+
+        startLifeRegeneration(regenerationTime);
+        updateLives();
+        resetOutput();
+        resetLetters();
+      }
+    }
+
+    function startLifeRegeneration(time) {
+      currentTimers.push(time);
+
+      const timerElement = document.getElementById('timer-display');
+      timerElement.style.visibility = 'visible';
+
+      const interval = setInterval(() => {
+        if (currentTimers[0] > 0) {
+          currentTimers[0] -= 1000;
+          updateTimerDisplay(currentTimers[0]);
+        } else {
+          clearInterval(interval);
+          currentTimers.shift();
+
+          if (currentTimers.length === 0) {
+            timerElement.style.visibility = 'hidden';
+          }
+
+          if (lives < maxLives) {
+            lives++;
+            updateLives();
+          }
+        }
+      }, 1000);
+    }
+
+    function updateLives() {
+      const lifeContainer = document.getElementById('life-container');
+      Array.from(lifeContainer.children).forEach((life, index) => {
+        life.style.visibility = index < lives ? 'visible' : 'hidden';
+      });
+    }
+
+    function updateTimerDisplay(time) {
+      const timerElement = document.getElementById('timer-display');
+      const minutes = Math.floor(time / 60000);
+      const seconds = Math.floor((time % 60000) / 1000);
+      timerElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    function resetOutput() {
+      const outputBoxes = document.querySelectorAll('.answer-letter');
+      outputBoxes.forEach(box => (box.textContent = ''));
+    }
+
+    function resetLetters() {
+      const letterButtons = document.querySelectorAll('.letter');
+      letterButtons.forEach(button => button.classList.remove('disabled'));
+    }
+  </script>
+</head>
+<body>
+  <div class="header">
+    <button onclick="location.href='../Home.html'">&#8592;</button>
+    <div class="stage-info">STAGE 1</div>
+  </div>
+
+  <div class="game-container">
+    <div class="life-container" id="life-container">
+      <div class="life-circle">⚡</div>
+      <div class="life-circle">⚡</div>
+      <div class="life-circle">⚡</div>
+    </div>
+    <div class="timer" id="timer-display"></div>
+    <img src="images/level4.jpg" alt="Puzzle Image" class="img-fluid" style="max-width: 100%; height: auto; object-fit: cover;">
+
+    <div class="output">
+      <div class="answer-letter"></div>
+      <div class="answer-letter"></div>
+      <div class="answer-letter"></div>
+      <div class="answer-letter"></div>
+      <div class="answer-letter"></div>
+    </div>
+    <div class="letters">
+      <div class="letter" onclick="selectLetter('S', this)">S</div>
+      <div class="letter" onclick="selectLetter('A', this)">A</div>
+      <div class="letter" onclick="selectLetter('L', this)">L</div>
+      <div class="letter" onclick="selectLetter('R', this)">R</div>
+      <div class="letter" onclick="selectLetter('I', this)">I</div>
+    </div>
+  </div>
+
+  <div

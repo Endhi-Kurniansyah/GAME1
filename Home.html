@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap Modal Demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background-color: #6f2dbd;
+        background-image: linear-gradient(to bottom, #6f2dbd, #b185db);
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        overflow: hidden;
+      }
+
+      .container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 90%;
+        max-width: 400px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        text-align: center;
+      }
+
+      .settings {
+        position: fixed;
+        top: 15px;
+        left: 15px;
+      }
+
+      .settings button {
+        background: none;
+        border: none;
+        color: #fff;
+        font-size: 1.5rem;
+        cursor: pointer;
+        border-radius: 100px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: background 0.3s ease;
+      }
+
+      .settings button:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      .logo {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #ffde59;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+        margin-bottom: 30px;
+      }
+
+      .menu {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        width: 100%;
+      }
+
+      .menu button {
+        padding: 15px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #fff;
+        background-color: #4caf50;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+        width: 100%;
+        user-select: none;
+      }
+
+      .menu button:hover {
+        background-color: #45a049;
+        transform: scale(1.05);
+      }
+
+      .menu button:nth-child(2) {
+        background-color: #ffa500;
+      }
+
+      .menu button:nth-child(2):hover {
+        background-color: #ff9400;
+      }
+
+      .footer {
+        font-size: 0.9rem;
+        color: #ddd;
+        text-align: center;
+        position: fixed;
+        bottom: 10px;
+      }
+
+      .footer a {
+        color: #ffde59;
+        text-decoration: none;
+      }
+
+      .footer a:hover {
+        text-decoration: underline;
+      }
+
+      .modal-header {
+        background-color: #8a47e6;
+        color: #fff;
+        border-bottom: none;
+      }
+
+      .modal-body {
+        background-color: #f8f9fa;
+        color: #000;
+      }
+
+      .modal-body label {
+        margin-bottom: 0;
+      }
+
+      .modal-body input[type="checkbox"] {
+        margin-left: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Hidden MP4 audio -->
+    <audio id="backgroundMusic" loop>
+        <source src="asset/backsound.mp4" type="audio/mpeg">
+        Your browser does not support the audio element.
+      </audio>
+
+    <div class="settings">
+      <button title="Pengaturan" data-bs-toggle="modal" data-bs-target="#settingsModal">
+        <i class="bi bi-gear"></i>
+      </button>
+    </div>
+    <div class="logo">TEKA GAMBAR</div>
+    <div class="container">
+      <div class="menu">
+        <button onclick="window.location.href='page/level1.html';">Mainkan</button>
+        <button onclick="window.location.href='Level.html';">Level</button>
+      </div>
+    </div>
+    <div class="footer">
+      <p>Teka Gambar &copy; 2024</p>
+    </div>
+    <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="settingsModalLabel">Pengaturan</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div class="d-flex align-items-center mb-3">
+                <label for="musicToggle">Musik</label>
+                <input type="checkbox" id="musicToggle" checked>
+              </div>
+              <div class="d-flex align-items-center mb-3">
+                <label>Suara</label>
+                <input type="checkbox">
+              </div>
+            </div>
+            <div class="modal-footer">
+              <a href="#">Perjanjian Privasi</a> / <a href="#">Ketentuan Pengguna</a>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+      <script>
+        const musicToggle = document.getElementById('musicToggle');
+        const backgroundMusic = document.getElementById('backgroundMusic');
+    
+        // Cek status musik saat halaman dimuat
+        if (sessionStorage.getItem('musicPlaying') === 'true') {
+            backgroundMusic.play();
+        }
+    
+        // Mengatur musik berdasarkan status checkbox
+        musicToggle.addEventListener('change', function () {
+            if (this.checked) {
+                sessionStorage.setItem('musicPlaying', 'true');
+                backgroundMusic.play();
+            } else {
+                sessionStorage.setItem('musicPlaying', 'false');
+                backgroundMusic.pause();
+            }
+        });
+    
+        // Memulai musik ketika halaman pertama kali dimuat jika statusnya true
+        document.addEventListener('click', function () {
+            if (sessionStorage.getItem('musicPlaying') === 'true') {
+                backgroundMusic.play();
+            }
+        });
+    </script>
+    
+  </body>
+</html>
