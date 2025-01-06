@@ -136,6 +136,17 @@
       font-size: 0.9rem;
       color: #ddd;
     }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #f44336;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
   </style>
   <script>
     let lives = 3;
@@ -166,7 +177,7 @@
 
       if (userAnswer.length === correctAnswer.length) {
         if (userAnswer === correctAnswer) {
-          window.location.href = 'selamat3.html';
+          window.location.href = 'selamat2.html';
         } else {
           handleWrongAnswer();
         }
@@ -234,6 +245,7 @@
       const letterButtons = document.querySelectorAll('.letter');
       letterButtons.forEach(button => button.classList.remove('disabled'));
     }
+
     function resetGame() {
       resetOutput();
       resetLetters();
@@ -273,5 +285,5 @@
     </div>
     <button onclick="resetGame()">Reset Jawaban</button>
   </div>
-
-  <div
+</body>
+</html>
