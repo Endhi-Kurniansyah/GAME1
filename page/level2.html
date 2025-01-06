@@ -234,6 +234,10 @@
       const letterButtons = document.querySelectorAll('.letter');
       letterButtons.forEach(button => button.classList.remove('disabled'));
     }
+    function resetGame() {
+      resetOutput();
+      resetLetters();
+    }
   </script>
 </head>
 <body>
@@ -267,6 +271,7 @@
       <div class="letter" onclick="selectLetter('U', this)">U</div>
       <div class="letter" onclick="selectLetter('S', this)">S</div>
     </div>
+    <button onclick="resetGame()">Reset Jawaban</button>
   </div>
 
   <div
